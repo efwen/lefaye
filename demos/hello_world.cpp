@@ -3,8 +3,15 @@
 
 int main(int, char**) {
   fmt::print("Hello World!\n");
+  lf::init(640, 480);
 
-  fmt::print("{} vulkan extensions supported\n", lf::getVulkanExtensionCount());
+  bool running = true;
+  while(running) {
+    if(!lf::updateWindow()) {
+      running = false;
+    }
+  }
 
+  lf::shutdown();
   return 0;
 }
