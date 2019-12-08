@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <vulkan/vulkan.h>
+#include <fmt/format.h>
 #include <windows.h>
 
 namespace lf {
@@ -50,6 +51,10 @@ namespace lf {
 
   void shutdown() {
     DestroyWindow(handle);
+  }
+
+  void printHello() {
+    fmt::print("Hello from lefaye!\n");
   }
 
   bool updateWindow() {

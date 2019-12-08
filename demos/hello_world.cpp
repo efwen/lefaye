@@ -1,9 +1,8 @@
-#include <fmt/format.h>
 #include <lf/lefaye.hpp>
 
 int main(int, char**) {
-  fmt::print("Hello World!\n");
-  lf::init(640, 480);
+  lf::init(1280, 720);
+  lf::printHello();
 
   bool running = true;
   while(running) {
