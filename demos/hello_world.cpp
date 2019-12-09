@@ -6,7 +6,7 @@ int main(int, char**) {
 
   bool running = true;
   while(running) {
-    if(!lf::updateWindow()) {
+    if(!lf::update()) {
       running = false;
     }
   }

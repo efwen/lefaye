@@ -5,7 +5,7 @@ namespace lf {
   void shutdown();
 
   void printHello();
-  bool updateWindow();
+  bool update();
 
   int add_vals(int a, int b);
 }
