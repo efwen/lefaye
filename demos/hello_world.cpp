@@ -1,8 +1,7 @@
 #include <lf/lefaye.hpp>
 
 int main(int, char**) {
-  lf::init(1280, 720);
-  lf::printHello();
+  lf::init("Hello World", 1280, 720);
 
   bool running = true;
   while(running) {

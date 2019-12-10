@@ -1,17 +1,17 @@
 #include "lf/lefaye.hpp"
 #include "lf/int/os.hpp"
+#include "lf/gfx.hpp"
 
 #include <cstdio>
-#include <vulkan/vulkan.h>
-#include <fmt/format.h>
 
 namespace lf {
-
-  void init(uint32_t width, uint32_t height) {
-     os::createWindow(width, height);
+  void init(const char* title, uint32_t width, uint32_t height) {
+    os::createWindow(title, width, height);
+    gfx::init();
   }
 
   void shutdown() {
+    gfx::shutdown();
     os::destroyWindow();
   }
 
@@ -19,18 +19,9 @@ namespace lf {
     if(!os::updateWindow())
       return false;
 
+    gfx::draw();
+
      return true;
-  }
-
-  void printHello() {
-    fmt::print("Hello from lefaye!\n");
-  }
-
-  uint32_t getVulkanExtensionCount() {
-    uint32_t extensionCount;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    return extensionCount;
   }
 
   int add_vals(int a, int b) {
