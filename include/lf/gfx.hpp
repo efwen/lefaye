@@ -1,7 +1,8 @@
 #pragma once
+#include <cstdint>
 
 namespace lf::gfx {
-  void init();
+  uint32_t init(const char* title);
   void shutdown();
   void draw();
 }
