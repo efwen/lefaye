@@ -1,6 +1,6 @@
 #include "lf/gfx.hpp"
+#include "lf/int/log.hpp"
 #include <vulkan/vulkan.h>
-#include <fmt/format.h>
 
 namespace lf::gfx {
   VkInstance instance;
@@ -15,7 +15,6 @@ namespace lf::gfx {
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-
     VkInstanceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pNext = nullptr;
@@ -28,7 +27,7 @@ namespace lf::gfx {
 
     VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
     if(result != VK_SUCCESS) {
-      fmt::print("Failed to create Vulkan Instance!\n");
+      log::error("Failed to create vulkan instance! VkResult = {}", result);
       return -1;
     }
     return 0;
