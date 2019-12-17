@@ -166,3 +166,14 @@ TEST_F(FileTest, AtEOF) {
   f.read(buf, 10);
   ASSERT_EQ(f.atEOF(), true);
 }
+
+TEST_F(FileTest, Size) {
+  auto result = f.size();
+  ASSERT_EQ(result.first, false);
+  ASSERT_EQ(result.second, 0);
+
+  f.open(readFileName, FileOpenMode::kRead);
+  result = f.size();
+  ASSERT_EQ(result.first, true);
+  ASSERT_EQ(result.second, strlen(testStr));
+}
