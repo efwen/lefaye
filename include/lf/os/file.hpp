@@ -32,6 +32,7 @@ namespace lf::os {
     std::pair<bool, size_t> write(const void* data, size_t size) const;
     std::pair<bool, size_t> tell() const;
     std::pair<bool, size_t> seek(int32_t seekAmount, FileSeekMode mode) const;
+    std::pair<bool, size_t> size() const;
     void flush() const;
 
     bool isOpen() const;

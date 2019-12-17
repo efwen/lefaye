@@ -79,13 +79,7 @@ namespace lf::os {
   }
 
   std::pair<bool, size_t> File::tell() const {
-    DWORD position = SetFilePointer(file_handle, 0, NULL, FILE_CURRENT);
-    if(position == INVALID_SET_FILE_POINTER) {
-      log::error("Failed to get file position! GetLastError() = {}", GetLastError());
-      return {false, position};
-    }
-
-    return {true, position};
+    return seek(0, FileSeekMode::kCurrent);
   }
 
   std::pair<bool, size_t> File::seek(int32_t seekAmount, FileSeekMode mode) const { //possible add'l direction param
@@ -96,5 +90,14 @@ namespace lf::os {
     }
 
     return {true, position};
+  }
+
+  std::pair<bool, size_t> File::size() const {
+    if(!isOpen()) {
+      log::error("Failed to get file size; file not open.");
+      return {false, 0};
+    }
+
+    return seek(0, FileSeekMode::kEnd);
   }
 }
