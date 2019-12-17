@@ -19,8 +19,8 @@ mark_as_advanced(
   gtest_disable_pthreads gtest_force_shared_crt gtest_hide_internal_symbols
 )
 
-function(vkp_add_test TESTNAME)
-  add_executable(${TESTNAME} ${TESTNAME}.cpp ${ARGN})
+function(vkp_add_test TESTDIR TESTNAME)
+  add_executable(${TESTNAME} "${TESTDIR}/${TESTNAME}.cpp" ${ARGN})
   target_link_libraries(${TESTNAME} lefaye gtest gmock gtest_main)
   target_include_directories(${TESTNAME} PUBLIC ${PROJECT_SOURCE_DIR}/include gtest gmock)
   target_compile_features(${TESTNAME} PRIVATE cxx_std_17)
@@ -35,4 +35,4 @@ function(vkp_add_test TESTNAME)
   )
 endfunction()
 
-vkp_add_test(example-test)
+vkp_add_test(os file-test)

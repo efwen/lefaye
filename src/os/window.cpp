@@ -1,5 +1,9 @@
-#include <windows.h>
+#include "lf/os/window.hpp"
+#include "lf/log.hpp"
+
 #include <cstdint>
+
+#include <windows.h>
 
 namespace lf::os {
   HWND handle = NULL;
@@ -18,7 +22,7 @@ namespace lf::os {
   }
 
 
-  void createWindow(const char* title, uint32_t width, uint32_t height) { 
+  void createWindow(const char* title, uint32_t width, uint32_t height) {
     WNDCLASSEX wc = {};
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -61,12 +65,5 @@ namespace lf::os {
 
   void destroyWindow() {
     PostQuitMessage(0);
-  }
-
-  void* allocMem(size_t bytes) {
-    return nullptr;
-  }
-
-  void freeMem(void* mem) {
   }
 }

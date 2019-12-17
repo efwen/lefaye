@@ -1,23 +1,23 @@
 #pragma once
 
-#include <fmt/format.h>
-
 #include <array>
 #include <string_view>
+
+#include <fmt/format.h>
 
 namespace lf::log {
 
   enum class Level {
-    INFO = 0,
-    WARN,
-    ERROR
+    kInfo = 0,
+    kWarn,
+    kError
   };
 
   namespace internal {
     constexpr std::array<const char*, 3> levelFmtStrings = {
-      "\033[0;36m[INFO]:  {}\n", //blue text
-      "\033[0;33m[WARN]:  {}\n", //yellow text
-      "\033[0;31m[ERROR]: {}\n"  //red text
+      "\033[0;36m[INFO]:  {}\033[0;0m\n", //blue text
+      "\033[0;33m[WARN]:  {}\033[0;0m\n", //yellow text
+      "\033[0;31m[ERROR]: {}\033[0;0m\n"  //red text
     };
 
     inline void vLogMessage(log::Level severity, std::string_view format, fmt::format_args args) {
@@ -29,17 +29,17 @@ namespace lf::log {
 
   template<typename... Args>
   void info(std::string_view format, const Args&... args) {
-    internal::vLogMessage(log::Level::INFO, format, fmt::make_format_args(args...));
+    internal::vLogMessage(log::Level::kInfo, format, fmt::make_format_args(args...));
   }
 
   template <typename... Args>
   void warn(std::string_view format, const Args&... args) {
-    internal::vLogMessage(log::Level::WARN, format, fmt::make_format_args(args...));
+    internal::vLogMessage(log::Level::kWarn, format, fmt::make_format_args(args...));
   }
 
   template<typename... Args>
   void error(std::string_view format, const Args&... args) {
-    internal::vLogMessage(log::Level::ERROR, format, fmt::make_format_args(args...));
+    internal::vLogMessage(log::Level::kError, format, fmt::make_format_args(args...));
   }
 }
 

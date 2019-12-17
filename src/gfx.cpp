@@ -1,5 +1,6 @@
 #include "lf/gfx.hpp"
-#include "lf/int/log.hpp"
+#include "lf/log.hpp"
+
 #include <vulkan/vulkan.h>
 
 namespace lf::gfx {

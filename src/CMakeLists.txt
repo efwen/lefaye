@@ -1,4 +1,4 @@
-add_library(lefaye core.cpp gfx.cpp platform/platform_win32.cpp)
+add_library(lefaye core.cpp gfx.cpp os/window.cpp os/file.cpp)
 
 target_include_directories(lefaye PUBLIC fmt::fmt ../include)
 target_link_libraries(lefaye PRIVATE Vulkan::Vulkan fmt::fmt)
