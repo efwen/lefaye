@@ -6,7 +6,15 @@
 #endif
 
 namespace lf::os {
-  void createWindow(const char* title, uint32_t width, uint32_t height);
-  void destroyWindow();
-  bool updateWindow();
+  class Window {
+  public:
+    Window();
+    virtual ~Window();
+
+    bool create(const char* title, uint32_t width, uint32_t height);
+    void destroy();
+    bool update();
+  protected:
+    HWND handle = NULL;
+  };
 }

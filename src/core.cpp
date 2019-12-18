@@ -8,6 +8,7 @@
 
 namespace lf {
   os::File file;
+  os::Window window;
 
   void init(const char* title, uint32_t width, uint32_t height) {
     log::info("Initializing LeFaye. Title: {}, Screen is {}x{}",
@@ -22,26 +23,21 @@ namespace lf {
       fmt::print(buf);
     }
 
-    os::createWindow(title, width, height);
+    window.create(title, width, height);
     uint32_t result = gfx::init(title);
   }
 
   void shutdown() {
     file.close();
     gfx::shutdown();
-    os::destroyWindow();
+    window.destroy();
   }
 
   bool update() {
-    if(!os::updateWindow())
+    if(!window.update())
       return false;
 
     gfx::draw();
-
-     return true;
-  }
-
-  int add_vals(int a, int b) {
-    return a + b;
+    return true;
   }
 }

@@ -6,7 +6,6 @@
 #include <windows.h>
 
 namespace lf::os {
-  HWND handle = NULL;
 
   LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch(message) {
@@ -21,8 +20,15 @@ namespace lf::os {
     return DefWindowProc(hwnd, message, wParam, lParam);
   }
 
+  Window::Window() :
+    handle(NULL)
+    {}
 
-  void createWindow(const char* title, uint32_t width, uint32_t height) {
+  Window::~Window() {
+    destroy();
+  }
+
+  bool Window::create(const char* title, uint32_t width, uint32_t height) {
     WNDCLASSEX wc = {};
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -33,7 +39,7 @@ namespace lf::os {
 
     RegisterClassEx(&wc);
 
-    HWND handle = CreateWindowEx(
+    handle = CreateWindowEx(
         0,
         "LFWindowClass",
         title,
@@ -46,10 +52,17 @@ namespace lf::os {
         NULL
         );
 
+    if(handle == NULL) {
+      log::error("Failed to open window!");
+      return false;
+    }
+
     ShowWindow(handle, SW_SHOW);
+
+    return true;
   }
 
-  bool updateWindow() {
+  bool Window::update() {
     MSG msg;
     while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
       if(msg.message == WM_QUIT) {
@@ -63,7 +76,7 @@ namespace lf::os {
     return true;
   }
 
-  void destroyWindow() {
+  void Window::destroy(){
     PostQuitMessage(0);
   }
 }
