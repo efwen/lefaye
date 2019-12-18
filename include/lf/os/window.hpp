@@ -12,9 +12,15 @@ namespace lf::os {
     virtual ~Window();
 
     bool create(const char* title, uint32_t width, uint32_t height);
-    void destroy();
+    bool destroy();
     bool update();
+
+    bool isOpen();
   protected:
     HWND handle = NULL;
+  };
+
+  inline bool Window::isOpen() {
+    return handle != NULL;
   };
 }

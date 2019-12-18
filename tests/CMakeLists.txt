@@ -36,3 +36,4 @@ function(vkp_add_test TESTDIR TESTNAME)
 endfunction()
 
 vkp_add_test(os file-test)
+vkp_add_test(os window-test)

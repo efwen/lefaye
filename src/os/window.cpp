@@ -25,10 +25,17 @@ namespace lf::os {
     {}
 
   Window::~Window() {
-    destroy();
+    if(isOpen()) {
+      destroy();
+    }
   }
 
   bool Window::create(const char* title, uint32_t width, uint32_t height) {
+    if(isOpen()) {
+      log::error("Cannot create window. Already created!");
+      return false;
+    }
+
     WNDCLASSEX wc = {};
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -63,6 +70,11 @@ namespace lf::os {
   }
 
   bool Window::update() {
+    if(handle == NULL) {
+      log::error("Unable to update window. No window is open!");
+      return false;
+    }
+
     MSG msg;
     while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
       if(msg.message == WM_QUIT) {
@@ -76,7 +88,13 @@ namespace lf::os {
     return true;
   }
 
-  void Window::destroy(){
-    PostQuitMessage(0);
+  bool Window::destroy(){
+    if(handle == NULL) {
+      log::error("Unable to destroy window. No window is open!");
+      return false;
+    }
+    DestroyWindow(handle);
+    handle = NULL;
+    return true;
   }
 }
