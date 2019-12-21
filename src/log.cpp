@@ -9,9 +9,9 @@ namespace lf::log {
 
   void setColor(log::Color color) {
 #ifdef LF_WIN32
-    SetConsoleTextAttribute(consoleHandle, static_cast<uint32_t>(color));
+    SetConsoleTextAttribute(consoleHandle, static_cast<uint8_t>(color));
 #else
-    fmt::print("\033[0;{}m", static_cast<uint32_t> color);
+    fmt::print("\033[0;{}m", static_cast<uint8_t> color);
 #endif
   }
 
@@ -19,7 +19,7 @@ namespace lf::log {
     setColor(levelColors[static_cast<uint8_t>(severity)]);
     fmt::vprint(
       fmt::format("{} {}\n",
-        levelPrefixes[static_cast<uint32_t>(severity)],
+        levelPrefixes[static_cast<uint8_t>(severity)],
         format),
       args);
     setColor(log::Color::kWhite);
