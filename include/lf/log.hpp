@@ -14,16 +14,27 @@ namespace lf::log {
   };
 
   enum class Color : uint8_t {
+#ifdef LF_WIN32
     kBlack = 0,
     kBlue,
     kGreen,
-    kLightBlue,
+    kCyan,
     kRed,
-    kPurple,
+    kMagenta,
     kYellow,
     kWhite,
+#else
+    kBlack = 30,
+    kRed,
+    kGreen,
+    kYellow,
+    kBlue,
+    kMagenta,
+    kCyan,
+    kWhite,
+#endif
   };
-  
+
   constexpr std::array<const char*, 3> levelPrefixes = {
     "[INFO]:  ",
     "[WARN]:  ",
@@ -31,7 +42,7 @@ namespace lf::log {
   };
 
   constexpr std::array<log::Color, 3> levelColors = {
-    log::Color::kLightBlue,
+    log::Color::kCyan,
     log::Color::kYellow,
     log::Color::kRed
   };
