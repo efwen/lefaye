@@ -1,9 +1,6 @@
+#include "lf/pch.hpp"
 #include "lf/os/file.hpp"
 #include "lf/log.hpp"
-
-#include <cstdint>
-
-#include <windows.h>
 
 namespace lf::os {
 

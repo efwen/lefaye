@@ -1,7 +1,5 @@
-#include "lf/gfx.hpp"
+#include "lf/pch.hpp"
 #include "lf/log.hpp"
-
-#include <vulkan/vulkan.h>
 
 namespace lf::gfx {
   VkInstance instance;

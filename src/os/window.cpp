@@ -1,13 +1,11 @@
+#include "lf/pch.hpp"
 #include "lf/os/window.hpp"
 #include "lf/log.hpp"
-
-#include <cstdint>
-
-#include <windows.h>
 
 namespace lf::os {
 
   LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    log::info("window message received");
     switch(message) {
       case WM_SIZE:
         return 0;

@@ -1,10 +1,9 @@
+#include "lf/pch.hpp"
 #include "lf/lefaye.hpp"
 #include "lf/log.hpp"
+#include "lf/gfx.hpp"
 #include "lf/os/window.hpp"
 #include "lf/os/file.hpp"
-#include "lf/gfx.hpp"
-
-#include <cstdio>
 
 namespace lf {
   os::File file;
