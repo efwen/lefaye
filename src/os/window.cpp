@@ -5,7 +5,6 @@
 namespace lf::os {
 
   LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
-    log::info("window message received");
     switch(message) {
       case WM_SIZE:
         return 0;

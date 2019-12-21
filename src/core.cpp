@@ -10,6 +10,7 @@ namespace lf {
   os::Window window;
 
   void init(const char* title, uint32_t width, uint32_t height) {
+    log::init();
     log::info("Initializing LeFaye. Title: {}, Screen is {}x{}",
         title, width, height);
 

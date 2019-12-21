@@ -4,6 +4,7 @@
 //standard library headers
 #include <cstdio>
 #include <cstdint>
+#include <array>
 
 //external apis
 #ifdef LF_WIN32

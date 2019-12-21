@@ -1,4 +1,4 @@
-add_library(lefaye core.cpp gfx.cpp os/window.cpp os/file.cpp)
+add_library(lefaye log.cpp core.cpp gfx.cpp os/window.cpp os/file.cpp)
 
 target_precompile_headers(lefaye PRIVATE ../include/lf/pch.hpp)
 target_include_directories(lefaye PUBLIC fmt::fmt ../include)
