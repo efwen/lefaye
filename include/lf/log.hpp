@@ -1,6 +1,11 @@
 #pragma once
+
 #include <array>
 #include <string_view>
+
+#ifdef LF_WIN32
+  #include <Windows.h>
+#endif
 
 #include <fmt/format.h>
 
@@ -12,18 +17,51 @@ namespace lf::log {
     kError
   };
 
+  enum class Color {
+    kDefault = 0,
+    kBlue = 36,
+    kYellow = 33,
+    kRed = 31,
+  };
+
   namespace internal {
-    constexpr std::array<const char*, 3> levelFmtStrings = {
-      "\033[0;36m[INFO]:  {}\033[0;0m\n", //blue text
-      "\033[0;33m[WARN]:  {}\033[0;0m\n", //yellow text
-      "\033[0;31m[ERROR]: {}\033[0;0m\n"  //red text
+    constexpr std::array<const char*, 3> prefixStrings = {
+      "[INFO]:  ",
+      "[WARN]:  ",
+      "[ERROR]: "
     };
 
-    inline void vLogMessage(log::Level severity, std::string_view format, fmt::format_args args) {
-      fmt::vprint(
-          fmt::format(internal::levelFmtStrings[static_cast<size_t>(severity)], format),
-          args);
+#ifdef LF_WIN32
+    HANDLE consoleHandle;
+#endif
+
+    inline void setColor(log::Color color) {
+#ifdef LF_WIN32
+      SetConsoleTextAttribute(consoleHandle, FOREGROUND_BLUE);
+#else
+      fmt::print("\033[0;{}m", static_cast<uint32_t> color);
+#endif
     }
+
+    inline void vLogMessage(log::Level severity, std::string_view format, fmt::format_args args) {
+      setColor(log::Color::kRed);
+      fmt::vprint(
+        fmt::format("{} {}\n",
+          prefixStrings[static_cast<uint32_t>(severity)],
+          format),
+        args);
+      fmt::print("{}\n", FOREGROUND_RED);
+      fmt::print("{}\n", FOREGROUND_BLUE);
+      fmt::print("{}\n", FOREGROUND_GREEN);
+      fmt::print("{}\n", FOREGROUND_INTENSITY);
+      setColor(log::Color::kDefault);
+    }
+  }
+ 
+  inline void init() {
+#ifdef LF_WIN32
+    internal::consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+#endif
   }
 
   template<typename... Args>
