@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16) #3.16 needed for precompiled headers
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 

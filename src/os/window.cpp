@@ -1,12 +1,8 @@
+#include "lf/pch.hpp"
 #include "lf/os/window.hpp"
 #include "lf/log.hpp"
 
-#include <cstdint>
-
-#include <windows.h>
-
 namespace lf::os {
-  HWND handle = NULL;
 
   LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch(message) {
@@ -21,8 +17,22 @@ namespace lf::os {
     return DefWindowProc(hwnd, message, wParam, lParam);
   }
 
+  Window::Window() :
+    handle(NULL)
+    {}
 
-  void createWindow(const char* title, uint32_t width, uint32_t height) {
+  Window::~Window() {
+    if(isOpen()) {
+      destroy();
+    }
+  }
+
+  bool Window::create(const char* title, uint32_t width, uint32_t height) {
+    if(isOpen()) {
+      log::error("Cannot create window. Already created!");
+      return false;
+    }
+
     WNDCLASSEX wc = {};
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -33,7 +43,7 @@ namespace lf::os {
 
     RegisterClassEx(&wc);
 
-    HWND handle = CreateWindowEx(
+    handle = CreateWindowEx(
         0,
         "LFWindowClass",
         title,
@@ -46,10 +56,22 @@ namespace lf::os {
         NULL
         );
 
+    if(handle == NULL) {
+      log::error("Failed to open window!");
+      return false;
+    }
+
     ShowWindow(handle, SW_SHOW);
+
+    return true;
   }
 
-  bool updateWindow() {
+  bool Window::update() {
+    if(handle == NULL) {
+      log::error("Unable to update window. No window is open!");
+      return false;
+    }
+
     MSG msg;
     while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
       if(msg.message == WM_QUIT) {
@@ -63,7 +85,13 @@ namespace lf::os {
     return true;
   }
 
-  void destroyWindow() {
-    PostQuitMessage(0);
+  bool Window::destroy(){
+    if(handle == NULL) {
+      log::error("Unable to destroy window. No window is open!");
+      return false;
+    }
+    DestroyWindow(handle);
+    handle = NULL;
+    return true;
   }
 }
