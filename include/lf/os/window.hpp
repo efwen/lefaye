@@ -6,6 +6,12 @@
 #endif
 
 namespace lf::os {
+  struct WindowProperties {
+    const char* title;
+    uint32_t x, y;
+    uint32_t width, height;
+  };
+
   class Window {
   public:
     Window();
@@ -15,9 +21,11 @@ namespace lf::os {
     bool destroy();
     bool update();
 
+    void resize(uint32_t width, uint32_t height);
     bool isOpen();
   protected:
     HWND handle = NULL;
+    WindowProperties props;
   };
 
   inline bool Window::isOpen() {

@@ -5,6 +5,8 @@
 #include "lf/os/window.hpp"
 #include "lf/os/file.hpp"
 
+#include "lf/gfx.hpp"
+
 namespace lf {
   os::File file;
   os::Window window;
@@ -17,7 +19,7 @@ namespace lf {
     file.open("hello.txt", os::FileOpenMode::kRead);
 
     char buf[256];
-    memset(buf, 0, 256);
+    memset(buf, 0, sizeof(buf));
 
     while(file.read(buf, 256).second > 0) {
       fmt::print(buf);
