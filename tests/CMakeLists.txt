@@ -37,3 +37,4 @@ endfunction()
 
 vkp_add_test(os file-test)
 vkp_add_test(os window-test)
+vkp_add_test(util ring_buffer_test)
