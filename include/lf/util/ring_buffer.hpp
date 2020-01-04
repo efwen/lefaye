@@ -9,38 +9,65 @@ namespace lf::util {
     std::array<T, buf_capacity> buf;
     size_t buf_head;
     size_t buf_tail;
+    size_t count;
 
   public:
     RingBuffer() :
       buf_head(0),
-      buf_tail(0)
-      {};
+      buf_tail(0),
+      count(0) {
+        static_assert(buf_capacity > 0, "RingBuffer must have size of at least 1");
+      };
 
     virtual ~RingBuffer() {
     };
 
     inline bool push(const T& item) {
-        assert(getSize() < buf_capacity)
+      if(isFull()) {
+        return false;
+      }
 
-        if(!isEmpty())
-          buf_head = (buf_head + 1) % buf_capacity;
+      if(!isEmpty()) {
+        buf_tail = (buf_tail + 1) % buf_capacity;
+      }
 
-        buf[buf_head] = item;
+      buf[buf_tail] = item;
+      count++;
+
+      return true;
     };
 
-    inline T pop() {
-      assert(!isEmpty());
+    inline bool pop(T& item) {
+      T hold = buf[buf_head];
 
-      T item = buf[buf_tail];
-      buf_tail = (buf_tail + buf_capacity + 1) % buf_capacity;
+      if(pop()) {
+        item = hold;
+        return true;
+      }
 
-      return item;
+      return false;
     };
 
-    inline T peek() const {
-        assert(!isEmpty());
+    inline bool pop() {
+      if(isEmpty()) {
+        return false;
+      }
 
-        return buf[buf_tail];
+      if(count > 1) {
+        buf_head = (buf_head + 1) % buf_capacity;
+      }
+      count--;
+
+      return true;
+    }
+
+    inline bool peek(T& item) const {
+      if(isEmpty()) {
+        return false;
+      }
+
+      item = buf[buf_head];
+      return true;
     };
 
     inline size_t getCapacity() const {
@@ -48,11 +75,15 @@ namespace lf::util {
     }
 
     inline size_t getSize() const {
-      return (buf_capacity + buf_head - buf_tail) % buf_capacity;
+      return count;
     }
 
     inline bool isEmpty() const {
-      return buf_head == buf_tail;
+      return count == 0;
+    }
+
+    inline bool isFull() const {
+        return count == buf_capacity;
     }
   };
 
