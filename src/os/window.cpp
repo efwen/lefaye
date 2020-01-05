@@ -1,7 +1,8 @@
 #include "lf/pch.hpp"
 #include "lf/os/window.hpp"
 #include "fmt/core.h"
-#include "lf/log.hpp"
+#include "lf/util/log.hpp"
+#include "lf/os/event_queue.hpp"
 
 namespace lf::os {
 
@@ -13,6 +14,7 @@ namespace lf::os {
           return 0;
         }
         else {
+          g_event_queue.pushEvent(OsEvent{EventType::kWindowKeyDown, static_cast<uint32_t>(wParam)});
           log::info("Key pressed: {}", wParam);
           break;
         }

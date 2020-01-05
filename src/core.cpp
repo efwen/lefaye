@@ -1,6 +1,7 @@
 #include "lf/pch.hpp"
 #include "lf/lefaye.hpp"
-#include "lf/log.hpp"
+#include "lf/util/log.hpp"
+#include "lf/os/event_queue.hpp"
 #include "lf/gfx.hpp"
 #include "lf/os/window.hpp"
 #include "lf/os/file.hpp"
@@ -8,8 +9,8 @@
 #include "lf/gfx.hpp"
 
 namespace lf {
-  os::File file;
   os::Window window;
+  os::File file;
 
   void init(const char* title, uint32_t width, uint32_t height) {
     log::init();
@@ -38,6 +39,8 @@ namespace lf {
   bool update() {
     if(!window.update())
       return false;
+
+    os::g_event_queue.processEvents();
 
     gfx::draw();
     return true;

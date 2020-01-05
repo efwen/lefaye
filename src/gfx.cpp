@@ -1,5 +1,5 @@
 #include "lf/pch.hpp"
-#include "lf/log.hpp"
+#include "lf/util/log.hpp"
 
 namespace lf::gfx {
   VkInstance instance;
