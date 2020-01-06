@@ -17,13 +17,13 @@ namespace lf {
     log::info("Initializing LeFaye. Title: {}, Screen is {}x{}",
         title, width, height);
 
-    file.open("hello.txt", os::FileOpenMode::kRead);
+    if(file.open("hello.txt", os::FileOpenMode::kRead)) {
+      char buf[256];
+      memset(buf, 0, sizeof(buf));
 
-    char buf[256];
-    memset(buf, 0, sizeof(buf));
-
-    while(file.read(buf, 256).second > 0) {
-      fmt::print(buf);
+      while(file.read(buf, 256).second > 0) {
+        fmt::print(buf);
+      }
     }
 
     window.create(title, width, height);
