@@ -17,7 +17,7 @@ namespace lf {
     log::info("Initializing LeFaye. Title: {}, Screen is {}x{}",
         title, width, height);
 
-    if(file.open("hello.txt", os::FileOpenMode::kRead)) {
+    if(file.open("data/hello.txt", os::FileOpenMode::kRead)) {
       char buf[256];
       memset(buf, 0, sizeof(buf));
 
