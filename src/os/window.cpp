@@ -8,21 +8,109 @@ namespace lf::os {
 
   LRESULT CALLBACK WindowProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch(message) {
-      case WM_KEYDOWN:
-        if(wParam ==  VK_ESCAPE) {
-          PostQuitMessage(0);
-          return 0;
-        }
-        else {
-          g_event_queue.pushEvent(OsEvent{EventType::kWindowKeyDown, static_cast<uint32_t>(wParam)});
-          log::info("Key pressed: {}", wParam);
-          break;
-        }
-      case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-      case WM_CLOSE:
+      case WM_CLOSE:  //does not work, need to have the actual hwnd
+      {
+        Event event;
+        event.type = EventType::kWindowClose;
+        
+        event_queue.pushEvent(event);
         break;
+      }
+      case WM_SIZE:
+      {
+        Event event;
+        event.type = EventType::kWindowResize;
+
+        RECT rect;
+        GetClientRect(hwnd, &rect);
+        event.size_x = rect.right - rect.left;
+        event.size_y = rect.bottom - rect.top;
+
+        event_queue.pushEvent(event);
+        break;
+      }
+      
+      //Input Events
+      case WM_KEYDOWN:
+      {
+        Event event;
+        event.type = EventType::kKeyPressed;
+        event.key_code = wParam;
+
+        event_queue.pushEvent(event);
+        break;
+      }
+      case WM_KEYUP:
+      {
+        Event event;
+        event.type = EventType::kKeyReleased;
+        event.key_code = wParam;
+
+        event_queue.pushEvent(event);
+        break;
+      }
+
+      case WM_LBUTTONDOWN:
+      case WM_RBUTTONDOWN:
+      case WM_MBUTTONDOWN:
+      {
+        Event event;
+        event.type = EventType::kMouseButtonPressed;
+
+        if(message == WM_LBUTTONDOWN)
+          event.button = MouseButton::kLeft;
+        if(message == WM_RBUTTONDOWN)
+          event.button = MouseButton::kRight;
+        if(message == WM_MBUTTONDOWN)
+          event.button = MouseButton::kMiddle;
+
+        event.mouse_x = GET_X_LPARAM(lParam);
+        event.mouse_y = GET_Y_LPARAM(lParam);
+
+        event_queue.pushEvent(event);
+        break;
+      }
+
+      case WM_LBUTTONUP:
+      case WM_RBUTTONUP:
+      case WM_MBUTTONUP:
+      {
+        Event event;
+        event.type = EventType::kMouseButtonReleased;
+
+        if(message == WM_LBUTTONUP)
+        event.button = MouseButton::kLeft;
+        if(message == WM_RBUTTONUP)
+        event.button = MouseButton::kRight;
+        if(message == WM_MBUTTONUP)
+        event.button = MouseButton::kMiddle;
+
+        event.mouse_x = GET_X_LPARAM(lParam);
+        event.mouse_y = GET_Y_LPARAM(lParam);
+
+        event_queue.pushEvent(event);
+        break;
+      }
+      
+      case WM_MOUSEMOVE:
+      {
+        Event event;
+        event.type = EventType::kMouseMove;
+        event.mouse_x = GET_X_LPARAM(lParam);
+        event.mouse_y = GET_Y_LPARAM(lParam);
+
+        event_queue.pushEvent(event);
+        break;
+      }
+      case WM_MOUSEWHEEL:
+      {
+        Event event;
+        event.type = EventType::kMouseScroll;
+        event.scroll_delta = GET_WHEEL_DELTA_WPARAM(wParam);
+
+        event_queue.pushEvent(event);
+        break;
+      }
     }
     return DefWindowProc(hwnd, message, wParam, lParam);
   }

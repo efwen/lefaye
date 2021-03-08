@@ -1,0 +1,2 @@
+pushd build
+ninja

@@ -12,10 +12,48 @@ namespace lf {
   os::Window window;
   os::File file;
 
+  bool quit = false;
+
   void init(const char* title, uint32_t width, uint32_t height) {
     log::init();
     log::info("Initializing LeFaye. Title: {}, Screen is {}x{}",
         title, width, height);
+
+    os::event_queue.addListener(os::EventType::kShutdown, [](os::Event& e) {
+      log::warn("Shutdown Requested...");
+      quit = true;
+    });
+
+    os::event_queue.addListener(os::EventType::kWindowClose, [](os::Event& e) {
+      log::warn("Window closed!");
+      os::Event event;
+      event.type = os::EventType::kShutdown;
+      os::event_queue.pushEvent(event);
+    });
+
+    os::event_queue.addListener(os::EventType::kKeyPressed, [](os::Event& e) {
+      log::info("KeyDown: {}", e.key_code);
+    });
+
+    os::event_queue.addListener(os::EventType::kKeyReleased, [](os::Event& e) {
+      log::info("KeyUp: {}", e.key_code);
+    });
+
+    os::event_queue.addListener(os::EventType::kMouseMove, [](os::Event& e) {
+      log::info("MouseMove: ({}, {})", e.mouse_x, e.mouse_y);
+    });
+
+    os::event_queue.addListener(os::EventType::kMouseScroll, [](os::Event& e) {
+      log::info("MouseScroll {}", e.scroll_delta);
+    });
+
+    os::event_queue.addListener(os::EventType::kMouseButtonPressed, [](os::Event& e) {
+      log::info("MouseButtonDown: {}, ({}, {})", e.button, e.mouse_x, e.mouse_y);
+    });
+
+    os::event_queue.addListener(os::EventType::kMouseButtonReleased, [](os::Event& e) {
+      log::info("MouseButtonUp: {}, ({}, {})", e.button, e.mouse_x, e.mouse_y);
+    });
 
     if(file.open("data/hello.txt", os::FileOpenMode::kRead)) {
       char buf[256];
@@ -37,12 +75,10 @@ namespace lf {
   }
 
   bool update() {
-    if(!window.update())
-      return false;
-
-    os::g_event_queue.processEvents();
-
+    window.update();
+    os::event_queue.processEvents();
     gfx::draw();
-    return true;
+
+    return !quit;
   }
 }

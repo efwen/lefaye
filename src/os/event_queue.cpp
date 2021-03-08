@@ -3,7 +3,7 @@
 
 namespace lf::os {
 
-    OsEventQueue g_event_queue;
+    OsEventQueue event_queue;
 
     OsEventQueue::OsEventQueue() {
     }
@@ -11,27 +11,25 @@ namespace lf::os {
     OsEventQueue::~OsEventQueue() {
     }
 
-    bool OsEventQueue::pushEvent(const OsEvent& event) {
+    bool OsEventQueue::pushEvent(const Event& event) {
         if(!buffer.push(event)) {
           log::error("Failed to push event!");
           return false;
         }
-
-        log::info("Event pushed");
         return true;
     }
 
     void OsEventQueue::processEvents() {
-      while(!buffer.isEmpty()) {
-        OsEvent event;
-        buffer.pop(event);
-        log::info("Event Processed: {}", event.e_type);
+      Event event;
+      while(buffer.pop(event)) {
+        for(OsEventListener listener : listenerSets[event.type]) {
+          listener(event);
+        }
       }
     }
 
-    bool OsEventQueue::addListener(const OsEventListener& listener) {
-    }
-
-    bool OsEventQueue::removeListener(const OsEventListener& listener) {
+    bool OsEventQueue::addListener(EventType eventType, OsEventListener listener) {
+      listenerSets[eventType].push_back(listener);
+      return true;
     }
 }
