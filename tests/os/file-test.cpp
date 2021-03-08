@@ -6,7 +6,6 @@
 
 using namespace lf::os;
 
-
 class FileTest : public ::testing::Test {
   protected:
     void SetUp() override {
