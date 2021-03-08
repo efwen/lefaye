@@ -38,6 +38,7 @@ namespace lf {
       while(file.read(buf, 256).second > 0) {
         fmt::print(buf);
       }
+      fmt::print("\n");
     }
 
     window.create(title, width, height);
@@ -52,7 +53,7 @@ namespace lf {
 
   bool update() {
     window.update();
-    os::event_queue.processEvents();
+    os::event_queue.dispatchEvents();
     gfx::draw();
 
     return !quit;

@@ -3,12 +3,13 @@
 #include "lf/util/ring_buffer.hpp"
 #include <array>
 #include <vector>
+#include <functional>
 
 namespace lf::os {
 
-  constexpr unsigned int kOsEventBufferSize = 256;
+  constexpr uint16_t kOsEventBufferSize = 256;
 
-  enum class EventType: uint8_t {
+  enum class EventType : uint8_t {
     kShutdown = 0,
     kWindowClose,
     kWindowResize,
@@ -21,11 +22,29 @@ namespace lf::os {
     kSize
   };
 
+  constexpr std::array<const char*, static_cast<size_t>(EventType::kSize)> eventTypeName {
+    "kShutdown",
+    "kWindowClose",
+    "kWindowResize",
+    "kKeyPressed",
+    "kKeyReleased",
+    "kMouseMoved",
+    "kMouseButtonPressed",
+    "kMouseButtonReleased",
+    "kMouseScroll"
+  };
+
   enum class MouseButton: uint8_t {
     kLeft = 0,
     kRight,
     kMiddle,
     kSize
+  };
+
+  constexpr std::array<const char*, static_cast<size_t>(MouseButton::kSize)> mouseButtonName {
+    "kLeft",
+    "kRight",
+    "kMiddle"
   };
 
   struct Event {
@@ -49,7 +68,7 @@ namespace lf::os {
     virtual ~OsEventQueue();
 
     bool pushEvent(const Event& event);
-    void processEvents();
+    void dispatchEvents();
     bool addListener(EventType eventType, OsEventListener listener);
   };
 

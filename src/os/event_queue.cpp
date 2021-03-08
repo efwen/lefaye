@@ -19,7 +19,7 @@ namespace lf::os {
         return true;
     }
 
-    void OsEventQueue::processEvents() {
+    void OsEventQueue::dispatchEvents() {
       Event event;
       while(buffer.pop(event)) {
         for(OsEventListener listener : listenerSets[static_cast<size_t>(event.type)]) {
@@ -29,6 +29,7 @@ namespace lf::os {
     }
 
     bool OsEventQueue::addListener(EventType eventType, OsEventListener listener) {
+      log::info("OsEventQueue: Listener added for EventType::{}", eventTypeName[static_cast<size_t>(eventType)]);
       listenerSets[static_cast<size_t>(eventType)].push_back(listener);
       return true;
     }
