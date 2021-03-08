@@ -95,7 +95,7 @@ namespace lf::os {
       case WM_MOUSEMOVE:
       {
         Event event;
-        event.type = EventType::kMouseMove;
+        event.type = EventType::kMouseMoved;
         event.mouse_x = GET_X_LPARAM(lParam);
         event.mouse_y = GET_Y_LPARAM(lParam);
 

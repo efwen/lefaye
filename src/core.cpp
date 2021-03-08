@@ -39,7 +39,7 @@ namespace lf {
       log::info("KeyUp: {}", e.key_code);
     });
 
-    os::event_queue.addListener(os::EventType::kMouseMove, [](os::Event& e) {
+    os::event_queue.addListener(os::EventType::kMouseMoved, [](os::Event& e) {
       log::info("MouseMove: ({}, {})", e.mouse_x, e.mouse_y);
     });
 

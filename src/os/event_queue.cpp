@@ -22,14 +22,14 @@ namespace lf::os {
     void OsEventQueue::processEvents() {
       Event event;
       while(buffer.pop(event)) {
-        for(OsEventListener listener : listenerSets[event.type]) {
+        for(OsEventListener listener : listenerSets[static_cast<size_t>(event.type)]) {
           listener(event);
         }
       }
     }
 
     bool OsEventQueue::addListener(EventType eventType, OsEventListener listener) {
-      listenerSets[eventType].push_back(listener);
+      listenerSets[static_cast<size_t>(eventType)].push_back(listener);
       return true;
     }
 }

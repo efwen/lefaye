@@ -4,28 +4,30 @@
 #include <array>
 #include <vector>
 
+#include <functional>
+
 namespace lf::os {
 
   constexpr unsigned int kOsEventBufferSize = 256;
 
-  enum EventType: uint32_t {
-    kNone = 0,
-    kShutdown,
+  enum class EventType: uint8_t {
+    kShutdown = 0,
     kWindowClose,
     kWindowResize,
     kKeyPressed,
     kKeyReleased,
-    kMouseMove,
+    kMouseMoved,
     kMouseButtonPressed,
     kMouseButtonReleased,
     kMouseScroll,
     kSize
   };
 
-  enum MouseButton: uint16_t {
+  enum class MouseButton: uint8_t {
     kLeft = 0,
     kRight,
-    kMiddle
+    kMiddle,
+    kSize
   };
 
   struct Event {
@@ -34,17 +36,16 @@ namespace lf::os {
     int16_t       mouse_x;
     int16_t       mouse_y;
     MouseButton   button;
-    int32_t       scroll_delta;
+    int16_t       scroll_delta;
     uint16_t      size_x;
     uint16_t      size_y;
   };
 
-  using OsEventListener = void (*)(Event&);
-
+  using OsEventListener = std::function<void(Event&)>;
   class OsEventQueue {
     util::RingBuffer<Event, kOsEventBufferSize> buffer;
     typedef std::vector<OsEventListener> OsEventListenerSet;
-    std::array<OsEventListenerSet, EventType::kSize> listenerSets;
+    std::array<OsEventListenerSet, static_cast<size_t>(EventType::kSize)> listenerSets;
   public:
     OsEventQueue();
     virtual ~OsEventQueue();
