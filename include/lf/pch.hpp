@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstdint>
 #include <array>
+#include <functional>
 
 //external apis
 #ifdef LF_WIN32

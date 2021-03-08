@@ -31,30 +31,6 @@ namespace lf {
       os::event_queue.pushEvent(event);
     });
 
-    os::event_queue.addListener(os::EventType::kKeyPressed, [](os::Event& e) {
-      log::info("KeyDown: {}", e.key_code);
-    });
-
-    os::event_queue.addListener(os::EventType::kKeyReleased, [](os::Event& e) {
-      log::info("KeyUp: {}", e.key_code);
-    });
-
-    os::event_queue.addListener(os::EventType::kMouseMoved, [](os::Event& e) {
-      log::info("MouseMove: ({}, {})", e.mouse_x, e.mouse_y);
-    });
-
-    os::event_queue.addListener(os::EventType::kMouseScroll, [](os::Event& e) {
-      log::info("MouseScroll {}", e.scroll_delta);
-    });
-
-    os::event_queue.addListener(os::EventType::kMouseButtonPressed, [](os::Event& e) {
-      log::info("MouseButtonDown: {}, ({}, {})", e.button, e.mouse_x, e.mouse_y);
-    });
-
-    os::event_queue.addListener(os::EventType::kMouseButtonReleased, [](os::Event& e) {
-      log::info("MouseButtonUp: {}, ({}, {})", e.button, e.mouse_x, e.mouse_y);
-    });
-
     if(file.open("data/hello.txt", os::FileOpenMode::kRead)) {
       char buf[256];
       memset(buf, 0, sizeof(buf));

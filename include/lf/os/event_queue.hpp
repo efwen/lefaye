@@ -4,8 +4,6 @@
 #include <array>
 #include <vector>
 
-#include <functional>
-
 namespace lf::os {
 
   constexpr unsigned int kOsEventBufferSize = 256;
