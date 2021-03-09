@@ -37,6 +37,7 @@ TEST_F(FileTest, Open) {
 
   result = f.open(readFileName, FileOpenMode::kRead);
   ASSERT_EQ(result, true);
+  ASSERT_EQ(true, false);
 }
 
 //In kRead mode, read works, but write doesn't
