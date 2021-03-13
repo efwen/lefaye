@@ -1,18 +1,34 @@
 #include "lf/pch.hpp"
-#include "lf/lefaye.hpp"
+#include "lf/app.hpp"
 #include "lf/util/log.hpp"
 #include "lf/os/event_queue.hpp"
 #include "lf/gfx.hpp"
 #include "lf/os/window.hpp"
 #include "lf/os/file.hpp"
 
-#include "lf/gfx.hpp"
-
 namespace lf {
+  //forward declarations
+  void init(const char* title, uint32_t width, uint32_t height);
+  void update();
+  void shutdown();
+
   os::Window window;
   os::File file;
 
-  bool quit = false;
+  bool running = true; 
+
+  void run(App& app, const char* title, uint32_t window_width, uint32_t window_height) {
+    init(title, window_width, window_height);
+    app.init();
+
+    while(running) {
+      update();
+      app.update();
+    }
+
+    app.shutdown();
+    shutdown();
+  }
 
   void init(const char* title, uint32_t width, uint32_t height) {
     log::init();
@@ -20,12 +36,12 @@ namespace lf {
         title, width, height);
 
     os::event_queue.addListener(os::EventType::kShutdown, [](os::Event& e) {
-      log::warn("Shutdown Requested...");
-      quit = true;
+      log::info("Shutdown Requested...");
+      running = false;
     });
 
     os::event_queue.addListener(os::EventType::kWindowClose, [](os::Event& e) {
-      log::warn("Window closed!");
+      log::info("Window closed!");
       os::Event event;
       event.type = os::EventType::kShutdown;
       os::event_queue.pushEvent(event);
@@ -45,17 +61,17 @@ namespace lf {
     uint32_t result = gfx::init(title);
   }
 
+  void update() {
+    window.update();
+    os::event_queue.dispatchEvents();
+    gfx::draw();
+  }
+
   void shutdown() {
+    log::info("Shutting Down LeFaye...");
     file.close();
     gfx::shutdown();
     window.destroy();
   }
 
-  bool update() {
-    window.update();
-    os::event_queue.dispatchEvents();
-    gfx::draw();
-
-    return !quit;
-  }
 }

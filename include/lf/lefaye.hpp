@@ -1,8 +1,6 @@
 #pragma once
-#include <cstdint>
 
+#include "lf/app.hpp"
 namespace lf {
-  void init(const char* title, uint32_t width, uint32_t height);
-  bool update();
-  void shutdown();
+  void run(App& app, const char* title, uint32_t window_width, uint32_t window_height);
 }
