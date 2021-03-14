@@ -14,7 +14,7 @@ namespace lf::os {
         event.type = EventType::kWindowClose;
         
         event_queue.pushEvent(event);
-        break;
+        return 0;
       }
       case WM_SIZE:
       {
@@ -127,6 +127,8 @@ namespace lf::os {
   }
 
   bool Window::create(const char* title, uint32_t width, uint32_t height) {
+    log::info("Creating Window. Title: \"{}\", Window Resolution: {}x{}",
+        title, width, height);
     if(isOpen()) {
       log::error("Cannot create window. Already created!");
       return false;
