@@ -1,35 +1,38 @@
 #include "lf/pch.hpp"
 #include "lf/app.hpp"
 #include "lf/util/log.hpp"
+#include "lf/util/log_internal.hpp"
 #include "lf/events/event_queue.hpp"
 #include "lf/gfx.hpp"
 #include "lf/os/window.hpp"
 
 namespace lf {
   //forward declarations
-  void init(App& app, const char* title, uint32_t width, uint32_t height);
+  void init(App& app);
   void main_loop(App& app);
   void shutdown(App& app);
 
   os::Window window;
 
-  void run(App& app, const char* title, uint32_t window_width, uint32_t window_height) {
+  void run(std::unique_ptr<App> app) {
     //Initialization
-    init(app, title, window_width, window_height);
+    init(*app);
 
     //Main Loop
-    main_loop(app);
+    main_loop(*app);
 
     //Shutdown
-    shutdown(app);
+    shutdown(*app);
   }
 
-  void init(App& app, const char* title, uint32_t window_width, uint32_t window_height) {
-    log::init();
-    log::info("Initializing LeFaye");
+  void init(App& app) {
+    auto boot_props = app.getBootProps();
 
-    window.create(title, window_width, window_height);
-    uint32_t result = gfx::init(title);
+    log::init(boot_props.title);
+    log::internal::info("Initializing LeFaye");
+
+    window.create(boot_props.title, boot_props.window_width, boot_props.window_height);
+    uint32_t result = gfx::init(boot_props.title);
     app.init();
   }
 
@@ -37,7 +40,7 @@ namespace lf {
     bool running = true;
 
     event_queue.addCallback(EventType::kShutdown, [&running](const Event& e) {
-      log::info("Shutdown Requested...");
+      log::internal::info("Shutdown Requested...");
       running = false;
     });
 
@@ -60,7 +63,7 @@ namespace lf {
   }
 
   void shutdown(App& app) {
-    log::info("Shutting Down LeFaye...");
+    log::internal::info("Shutting Down LeFaye...");
     app.shutdown();
     gfx::shutdown();
     window.destroy();

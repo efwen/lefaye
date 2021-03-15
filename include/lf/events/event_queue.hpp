@@ -7,7 +7,7 @@
 
 namespace lf {
 
-  constexpr uint16_t kEventBufferSize = 256;
+  constexpr uint16_t kEventBufferSize = 4096;
 
   enum class EventType : uint8_t {
     kShutdown = 0,
@@ -65,8 +65,7 @@ namespace lf {
     util::RingBuffer<Event, kEventBufferSize> buffer;
     std::array<EventCallbackSet, static_cast<size_t>(EventType::kSize)> callbackSets;
   public:
-    EventQueue();
-    virtual ~EventQueue();
+    virtual ~EventQueue() = default;
 
     bool pushEvent(const Event& event);
     void dispatchEvents();

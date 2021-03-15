@@ -1,15 +1,18 @@
+#include <memory>
 
-#include <iostream>
 #include <lf/lefaye.hpp>
 #include <lf/events/event_queue.hpp>
+#include <lf/util/log.hpp>
 
 class HelloApp : public lf::App {
 public:
+  HelloApp(const BootProperties& props) : App(props) {}
+
   void init() {
-    std::cout << "HelloApp Setup" << std::endl;
+    lf::log::info("HelloApp Setup");
 
     lf::event_queue.addCallback(lf::EventType::kKeyPressed, [this](const lf::Event& e){
-      std::cout << e.key_code << " key pressed! Frame " << frame_count << std::endl;
+      lf::log::trace("{} key pressed! Frame {}", e.key_code, frame_count);
 
       if(e.key_code == 27) {    //escape key triggers shutdown
         lf::Event shutdown_event;
@@ -24,7 +27,7 @@ public:
   }
 
   void shutdown() {
-    std::cout << "HelloApp Shutdown!" << std::endl;
+    lf::log::info("HelloApp Shutdown!");
   }
 private:
   uint64_t frame_count = 0;
@@ -32,7 +35,11 @@ private:
 
 
 int main(int, char**) {
-  HelloApp hello_app;
-  lf::run(hello_app, "HelloApp", 1280, 720);
+  lf::App::BootProperties props {
+    "HelloApp",
+    1280, 720
+  };
+
+  lf::run(std::make_unique<HelloApp>(props));
   return 0;
 }

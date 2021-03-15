@@ -1,2 +1,3 @@
 pushd build
 ninja
+popd

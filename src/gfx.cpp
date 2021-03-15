@@ -4,11 +4,11 @@
 namespace lf::gfx {
   VkInstance instance;
 
-  uint32_t init(const char* appName) {
+  uint32_t init(std::string_view appName) {
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pNext = nullptr;
-    appInfo.pApplicationName = appName;
+    appInfo.pApplicationName = appName.data();
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "LeFaye";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);

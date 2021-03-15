@@ -2,6 +2,7 @@
 #include "lf/os/window.hpp"
 #include "fmt/core.h"
 #include "lf/util/log.hpp"
+#include "lf/util/log_internal.hpp"
 #include "lf/events/event_queue.hpp"
 
 namespace lf::os {
@@ -117,7 +118,7 @@ namespace lf::os {
 
   Window::Window() :
     handle(NULL),
-    props{0, 0, 0, 0}
+    props{"", 0, 0, 0}
     {}
 
   Window::~Window() {
@@ -126,11 +127,11 @@ namespace lf::os {
     }
   }
 
-  bool Window::create(const char* title, uint32_t width, uint32_t height) {
-    log::info("Creating Window. Title: \"{}\", Window Resolution: {}x{}",
+  bool Window::create(std::string_view title, uint32_t width, uint32_t height) {
+    log::internal::info("Creating Window. Title: \"{}\", Window Resolution: {}x{}",
         title, width, height);
     if(isOpen()) {
-      log::error("Cannot create window. Already created!");
+      log::internal::error("Cannot create window. Already created!");
       return false;
     }
 
@@ -153,10 +154,10 @@ namespace lf::os {
     handle = CreateWindowEx(
         0,
         "LFWindowClass",
-        title,
+        title.data(),
         dwStyle,
         300,
-        300,
+        50,
         wr.right - wr.left,
         wr.bottom - wr.top,
         NULL,
@@ -166,11 +167,11 @@ namespace lf::os {
       );
 
     if(handle == NULL) {
-      log::error("Failed to open window! GetLastError() = {}", GetLastError());
+      log::internal::error("Failed to open window! GetLastError() = {}", GetLastError());
       return false;
     }
 
-    props = {title, 300, 300, width, height};
+    props = {std::string(title), 300, 50, width, height};
 
     ShowWindow(handle, SW_SHOW);
 
@@ -179,7 +180,7 @@ namespace lf::os {
 
   bool Window::update() {
     if(handle == NULL) {
-      log::error("Unable to update window. No window is open!");
+      log::internal::error("Unable to update window. No window is open!");
       return false;
     }
 
@@ -198,7 +199,7 @@ namespace lf::os {
 
   bool Window::destroy(){
     if(handle == NULL) {
-      log::error("Unable to destroy window. No window is open!");
+      log::internal::error("Unable to destroy window. No window is open!");
       return false;
     }
 
