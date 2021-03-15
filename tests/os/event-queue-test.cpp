@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <lf/os/event_queue.hpp>
+#include <lf/events/event_queue.hpp>
 
-using namespace lf::os;
+using namespace lf;
 #define ASSERT_NAME_MATCH(enumName, namesArray, value) ASSERT_EQ(namesArray[static_cast<size_t>(enumName::value)], #value);
 #define ASSERT_EVENT_TYPE_NAME(value) ASSERT_NAME_MATCH(EventType, eventTypeName, value);
 #define ASSERT_MOUSE_BUTTON_NAME(button) ASSERT_NAME_MATCH(MouseButton, mouseButtonName, button);
@@ -28,7 +28,7 @@ TEST(EventQueue, ShutdownEvent) {
   EventType type = EventType::kShutdown;
   bool wasCalled = false;
 
-  event_queue.addListener(type, [&wasCalled](Event& e) {
+  event_queue.addCallback(type, [&wasCalled](const Event& e) {
     wasCalled = true;
   });
 
@@ -45,7 +45,7 @@ TEST(EventQueue, WindowCloseEvent) {
   EventType type = EventType::kWindowClose;
   bool wasCalled = false;
 
-  event_queue.addListener(type, [&wasCalled](Event& e) {
+  event_queue.addCallback(type, [&wasCalled](const Event& e) {
     wasCalled = true;
   });
 
@@ -64,7 +64,7 @@ TEST(EventQueue, WindowResizeEvent) {
   uint32_t size_x = 0;
   uint32_t size_y = 0;
   
-  event_queue.addListener(type, [&wasCalled, &size_x, &size_y](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &size_x, &size_y](const Event& e) {
     wasCalled = true;
     size_x = e.size_x;
     size_y = e.size_y;
@@ -88,7 +88,7 @@ TEST(EventQueue, KeyPressedEvent) {
   bool wasCalled = false;
   uint16_t key_code = 0;
 
-  event_queue.addListener(type, [&wasCalled, &key_code](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &key_code](const Event& e) {
     wasCalled = true;
     key_code = e.key_code;
   });
@@ -109,7 +109,7 @@ TEST(EventQueue, KeyReleasedEvent) {
   bool wasCalled = false;
   uint16_t key_code = 0;
 
-  event_queue.addListener(type, [&wasCalled, &key_code](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &key_code](const Event& e) {
     wasCalled = true;
     key_code = e.key_code;
   });
@@ -131,7 +131,7 @@ TEST(EventQueue, MouseMovedEvent) {
   uint16_t mouse_x = 0;
   uint16_t mouse_y = 0;
 
-  event_queue.addListener(type, [&wasCalled, &mouse_x, &mouse_y](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &mouse_x, &mouse_y](const Event& e) {
     wasCalled = true;
     mouse_x = e.mouse_x;
     mouse_y = e.mouse_y;
@@ -155,7 +155,7 @@ TEST(EventQueue, MouseButtonPressedEvent) {
   bool wasCalled = false;
   MouseButton button = MouseButton::kSize;
 
-  event_queue.addListener(type, [&wasCalled, &button](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &button](const Event& e) {
     wasCalled = true;
     button = e.button;
   });
@@ -176,7 +176,7 @@ TEST(EventQueue, MouseButtonReleasedEvent) {
   bool wasCalled = false;
   MouseButton button = MouseButton::kSize;
 
-  event_queue.addListener(type, [&wasCalled, &button](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &button](const Event& e) {
     wasCalled = true;
     button = e.button;
   });
@@ -197,7 +197,7 @@ TEST(EventQueue, MouseScrollEvent) {
   bool wasCalled = false;
   int16_t delta = 0;
 
-  event_queue.addListener(type, [&wasCalled, &delta](Event& e) {
+  event_queue.addCallback(type, [&wasCalled, &delta](const Event& e) {
     wasCalled = true;
     delta = e.scroll_delta;
   });

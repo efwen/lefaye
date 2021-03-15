@@ -2,7 +2,7 @@
 #include "lf/os/window.hpp"
 #include "fmt/core.h"
 #include "lf/util/log.hpp"
-#include "lf/os/event_queue.hpp"
+#include "lf/events/event_queue.hpp"
 
 namespace lf::os {
 

@@ -1,7 +1,7 @@
 #include "lf/pch.hpp"
 #include "lf/app.hpp"
 #include "lf/util/log.hpp"
-#include "lf/os/event_queue.hpp"
+#include "lf/events/event_queue.hpp"
 #include "lf/gfx.hpp"
 #include "lf/os/window.hpp"
 
@@ -36,25 +36,24 @@ namespace lf {
   void main_loop(App& app) {
     bool running = true;
 
-    os::event_queue.addListener(os::EventType::kShutdown, [&running](os::Event& e) {
+    event_queue.addCallback(EventType::kShutdown, [&running](const Event& e) {
       log::info("Shutdown Requested...");
       running = false;
     });
 
-    os::event_queue.addListener(os::EventType::kWindowClose, [](os::Event& e) {
+    event_queue.addCallback(EventType::kWindowClose, [](const Event& e) {
       if(MessageBoxA(NULL, "Close Application?", "Close Application?", MB_OKCANCEL) == IDCANCEL)
         return;
       
-      log::info("Window closed!");
-      os::Event event;
-      event.type = os::EventType::kShutdown;
-      os::event_queue.pushEvent(event);
+      Event event;
+      event.type = EventType::kShutdown;
+      event_queue.pushEvent(event);
     });
 
 
     while(running) {
       window.update();
-      os::event_queue.dispatchEvents();
+      event_queue.dispatchEvents();
       app.update();
       gfx::draw();
     }

@@ -1,20 +1,20 @@
 
 #include <iostream>
 #include <lf/lefaye.hpp>
-#include <lf/os/event_queue.hpp>
+#include <lf/events/event_queue.hpp>
 
 class HelloApp : public lf::App {
 public:
   void init() {
     std::cout << "HelloApp Setup" << std::endl;
 
-    lf::os::event_queue.addListener(lf::os::EventType::kKeyPressed, [this](lf::os::Event& e){
+    lf::event_queue.addCallback(lf::EventType::kKeyPressed, [this](const lf::Event& e){
       std::cout << e.key_code << " key pressed! Frame " << frame_count << std::endl;
 
       if(e.key_code == 27) {    //escape key triggers shutdown
-        lf::os::Event shutdown_event;
-        shutdown_event.type = lf::os::EventType::kShutdown;
-        lf::os::event_queue.pushEvent(shutdown_event);
+        lf::Event shutdown_event;
+        shutdown_event.type = lf::EventType::kShutdown;
+        lf::event_queue.pushEvent(shutdown_event);
       }
     });
   }
