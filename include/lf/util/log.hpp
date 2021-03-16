@@ -8,12 +8,14 @@
 namespace lf::log {
 
   enum class Level : uint8_t {
-    kInfo = 0,
+    kTrace = 0,
+    kInfo,
     kWarn,
     kError,
+    kSize,
   };
 
-  enum class Color : uint8_t {
+  enum class Color : uint16_t {
 #ifdef LF_WIN32
     kBlack = 0,
     kBlue,
@@ -35,35 +37,42 @@ namespace lf::log {
 #endif
   };
 
-  constexpr std::array<const char*, 3> levelPrefixes = {
+  constexpr std::array<const char*, static_cast<size_t>(Level::kSize)> levelPrefixes = {
+    "[TRACE]: ",
     "[INFO]:  ",
     "[WARN]:  ",
     "[ERROR]: "
   };
 
-  constexpr std::array<log::Color, 3> levelColors = {
+  constexpr std::array<log::Color, static_cast<size_t>(Level::kSize)> levelColors = {
+    log::Color::kWhite,
     log::Color::kCyan,
     log::Color::kYellow,
     log::Color::kRed
   };
 
-  void init();
+  void init(std::string_view short_app_title);
 
-  void vLogMessage(log::Level severity, std::string_view format, fmt::format_args args);
+  void vLogLefayeMessage(log::Level severity, std::string_view format, fmt::format_args args);
+  void vLogClientMessage(log::Level severity, std::string_view format, fmt::format_args args);
+
+  template <typename... Args>
+  void trace(std::string_view format, const Args&... args) {
+    vLogClientMessage(log::Level::kTrace, format, fmt::make_format_args(args...));
+  }
 
   template<typename... Args>
   void info(std::string_view format, const Args&... args) {
-    vLogMessage(log::Level::kInfo, format, fmt::make_format_args(args...));
+    vLogClientMessage(log::Level::kInfo, format, fmt::make_format_args(args...));
   }
 
   template <typename... Args>
   void warn(std::string_view format, const Args&... args) {
-    vLogMessage(log::Level::kWarn, format, fmt::make_format_args(args...));
+    vLogClientMessage(log::Level::kWarn, format, fmt::make_format_args(args...));
   }
 
   template<typename... Args>
   void error(std::string_view format, const Args&... args) {
-    vLogMessage(log::Level::kError, format, fmt::make_format_args(args...));
+    vLogClientMessage(log::Level::kError, format, fmt::make_format_args(args...));
   }
 }
-

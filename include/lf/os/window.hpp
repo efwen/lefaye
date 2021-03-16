@@ -7,7 +7,7 @@
 
 namespace lf::os {
   struct WindowProperties {
-    const char* title;
+    std::string title;
     uint32_t x, y;
     uint32_t width, height;
   };
@@ -17,7 +17,7 @@ namespace lf::os {
     Window();
     virtual ~Window();
 
-    bool create(const char* title, uint32_t width, uint32_t height);
+    bool create(std::string_view title, uint32_t width, uint32_t height);
     bool destroy();
     bool update();
 

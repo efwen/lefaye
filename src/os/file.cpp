@@ -1,6 +1,7 @@
 #include "lf/pch.hpp"
 #include "lf/os/file.hpp"
 #include "lf/util/log.hpp"
+#include "lf/util/log_internal.hpp"
 
 namespace lf::os {
 
@@ -17,7 +18,7 @@ namespace lf::os {
 
   bool File::open(const char* filename,
       FileOpenMode mode) {
-    log::info("opening file \"{}\"", filename);
+    log::internal::info("opening file \"{}\"", filename);
 
     file_handle = CreateFile(filename,
         (mode == FileOpenMode::kRead) ? GENERIC_READ : GENERIC_WRITE,
@@ -28,7 +29,7 @@ namespace lf::os {
         NULL);
 
     if(file_handle == INVALID_HANDLE_VALUE) {
-      log::error("Failed to open file! GetLastError() = {}", GetLastError());
+      log::internal::error("Failed to open file! GetLastError() = {}", GetLastError());
       return false;
     }
 
@@ -45,7 +46,7 @@ namespace lf::os {
 
       BOOL success = ReadFile(file_handle, data, bytes, &bytesRead, NULL);
       if(!success) {
-        log::error("Failed to read file! GetLastError() = {}", GetLastError());
+        log::internal::error("Failed to read file! GetLastError() = {}", GetLastError());
         return {false, 0};
       }
 
@@ -61,7 +62,7 @@ namespace lf::os {
 
     BOOL success = WriteFile(file_handle, data, bytes, &bytesWritten, NULL);
     if(!success) {
-      log::error("Failed to write to file! GetLastError() = {}", GetLastError());
+      log::internal::error("Failed to write to file! GetLastError() = {}", GetLastError());
       return {false, 0};
     }
 
@@ -71,7 +72,7 @@ namespace lf::os {
   void File::flush() const {
     BOOL success = FlushFileBuffers(file_handle);
     if(!success) {
-      log::error("Failed to flush file buffer! GetLastError() = {}", GetLastError());
+      log::internal::error("Failed to flush file buffer! GetLastError() = {}", GetLastError());
     }
   }
 
@@ -82,7 +83,7 @@ namespace lf::os {
   std::pair<bool, size_t> File::seek(int32_t seekAmount, FileSeekMode mode) const { //possible add'l direction param
     DWORD position = SetFilePointer(file_handle, seekAmount, NULL, static_cast<uint32_t>(mode));
     if(position == INVALID_SET_FILE_POINTER) {
-      log::error("Failed to seek! GetLastError() = {}", GetLastError());
+      log::internal::error("Failed to seek! GetLastError() = {}", GetLastError());
       return {false, position};
     }
 
@@ -91,7 +92,7 @@ namespace lf::os {
 
   std::pair<bool, size_t> File::size() const {
     if(!isOpen()) {
-      log::error("Failed to get file size; file not open.");
+      log::internal::error("Failed to get file size; file not open.");
       return {false, 0};
     }
 

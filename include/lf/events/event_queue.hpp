@@ -5,9 +5,9 @@
 #include <vector>
 #include <functional>
 
-namespace lf::os {
+namespace lf {
 
-  constexpr uint16_t kOsEventBufferSize = 256;
+  constexpr uint16_t kEventBufferSize = 4096;
 
   enum class EventType : uint8_t {
     kShutdown = 0,
@@ -58,19 +58,19 @@ namespace lf::os {
     uint16_t      size_y;
   };
 
-  using OsEventListener = std::function<void(Event&)>;
-  class OsEventQueue {
-    util::RingBuffer<Event, kOsEventBufferSize> buffer;
-    typedef std::vector<OsEventListener> OsEventListenerSet;
-    std::array<OsEventListenerSet, static_cast<size_t>(EventType::kSize)> listenerSets;
+  using EventCallback = std::function<void(const Event& e)>;
+  typedef std::vector<EventCallback> EventCallbackSet;
+
+  class EventQueue {
+    util::RingBuffer<Event, kEventBufferSize> buffer;
+    std::array<EventCallbackSet, static_cast<size_t>(EventType::kSize)> callbackSets;
   public:
-    OsEventQueue();
-    virtual ~OsEventQueue();
+    virtual ~EventQueue() = default;
 
     bool pushEvent(const Event& event);
     void dispatchEvents();
-    bool addListener(EventType eventType, OsEventListener listener);
+    bool addCallback(EventType eventType, EventCallback callback);
   };
 
-  extern OsEventQueue event_queue;
+  extern EventQueue event_queue;
 }

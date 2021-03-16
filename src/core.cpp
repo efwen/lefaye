@@ -1,61 +1,72 @@
 #include "lf/pch.hpp"
-#include "lf/lefaye.hpp"
+#include "lf/app.hpp"
 #include "lf/util/log.hpp"
-#include "lf/os/event_queue.hpp"
+#include "lf/util/log_internal.hpp"
+#include "lf/events/event_queue.hpp"
 #include "lf/gfx.hpp"
 #include "lf/os/window.hpp"
-#include "lf/os/file.hpp"
-
-#include "lf/gfx.hpp"
 
 namespace lf {
+  //forward declarations
+  void init(App& app);
+  void main_loop(App& app);
+  void shutdown(App& app);
+
   os::Window window;
-  os::File file;
 
-  bool quit = false;
+  void run(std::unique_ptr<App> app) {
+    //Initialization
+    init(*app);
 
-  void init(const char* title, uint32_t width, uint32_t height) {
-    log::init();
-    log::info("Initializing LeFaye. Title: {}, Screen is {}x{}",
-        title, width, height);
+    //Main Loop
+    main_loop(*app);
 
-    os::event_queue.addListener(os::EventType::kShutdown, [](os::Event& e) {
-      log::warn("Shutdown Requested...");
-      quit = true;
-    });
-
-    os::event_queue.addListener(os::EventType::kWindowClose, [](os::Event& e) {
-      log::warn("Window closed!");
-      os::Event event;
-      event.type = os::EventType::kShutdown;
-      os::event_queue.pushEvent(event);
-    });
-
-    if(file.open("data/hello.txt", os::FileOpenMode::kRead)) {
-      char buf[256];
-      memset(buf, 0, sizeof(buf));
-
-      while(file.read(buf, 256).second > 0) {
-        fmt::print(buf);
-      }
-      fmt::print("\n");
-    }
-
-    window.create(title, width, height);
-    uint32_t result = gfx::init(title);
+    //Shutdown
+    shutdown(*app);
   }
 
-  void shutdown() {
-    file.close();
+  void init(App& app) {
+    auto boot_props = app.getBootProps();
+
+    log::init(boot_props.title);
+    log::internal::info("Initializing LeFaye");
+
+    window.create(boot_props.title, boot_props.window_width, boot_props.window_height);
+    uint32_t result = gfx::init(boot_props.title);
+    app.init();
+  }
+
+  void main_loop(App& app) {
+    bool running = true;
+
+    event_queue.addCallback(EventType::kShutdown, [&running](const Event& e) {
+      log::internal::info("Shutdown Requested...");
+      running = false;
+    });
+
+    event_queue.addCallback(EventType::kWindowClose, [](const Event& e) {
+      if(MessageBoxA(NULL, "Close Application?", "Close Application?", MB_OKCANCEL) == IDCANCEL)
+        return;
+      
+      Event event;
+      event.type = EventType::kShutdown;
+      event_queue.pushEvent(event);
+    });
+
+
+    while(running) {
+      window.update();
+      event_queue.dispatchEvents();
+      app.update();
+      gfx::draw();
+    }
+  }
+
+  void shutdown(App& app) {
+    log::internal::info("Shutting Down LeFaye...");
+    app.shutdown();
     gfx::shutdown();
     window.destroy();
   }
 
-  bool update() {
-    window.update();
-    os::event_queue.dispatchEvents();
-    gfx::draw();
-
-    return !quit;
-  }
 }
